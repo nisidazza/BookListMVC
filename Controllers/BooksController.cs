@@ -24,6 +24,25 @@ namespace BookListMVC.Controllers
             return View();
         }
 
+        public IActionResult Upsert(int? id)
+        {
+            Book = new Book();
+            if (id == null)
+            {
+                //create
+                return View(Book);
+            }
+            //update
+            Book = _db.Books.FirstOrDefault(u => u.Id == id);
+            if (Book == null)
+            {
+                //no book in the database
+                return NotFound();
+            }
+            //the View will expect a book from the database regardless of if it used for create or update
+            return View(Book);
+        }
+
         #region API Calls
         [HttpGet]
         public async Task<IActionResult> GetAll()

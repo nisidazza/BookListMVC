@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BookListMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BookListMVC.Controllers
 {
@@ -40,6 +41,30 @@ namespace BookListMVC.Controllers
                 return NotFound();
             }
             //the View will expect a book from the database regardless of if it used for create or update
+            return View(Book);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //no need to pass a Book as a parameter as the bind property attribute allows to directly access the book obj
+        public IActionResult Upsert()
+        {
+            if (ModelState.IsValid)
+            {
+                if (Book.Id == 0)
+                {
+                    //create
+                    _db.Books.Add(Book);
+                }
+                else
+                {
+                    //edit
+                    _db.Books.Update(Book);
+                }
+                // push the data to the database
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
             return View(Book);
         }
 

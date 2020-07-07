@@ -43,6 +43,8 @@ namespace BookListMVC.Controllers
             await _db.SaveChangesAsync();
             return Json(new { success = true, message = "Delete successful" });
         }
+
+
         #endregion
     }
 }
